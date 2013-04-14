@@ -40,6 +40,12 @@ public class Application {
                 listBreweries();
             } else if (command.equals("5")) {
                 deleteBeer();
+            } else if (command.equals("6")) {
+                listBeers();
+            } else if (command.equals("7")) {
+                addBrewery();
+            } else if (command.equals("8")) {
+                deleteBrewery();
             } else {
                 System.out.println("unknown command");
             }
@@ -58,6 +64,9 @@ public class Application {
         System.out.println("3   add beer");
         System.out.println("4   list breweries");
         System.out.println("5   delete beer");
+        System.out.println("6   list beers");
+        System.out.println("7   add brewery");
+        System.out.println("8   delete brewery");
         System.out.println("0   quit");
         System.out.println("");
     }
@@ -74,13 +83,13 @@ public class Application {
         // luodaan olut ilman panimon asettamista
         Beer b = new Beer("Märzen");
         server.save(b);
-        
+
         // jotta saamme panimon asetettua, tulee olot lukea uudelleen kannasta
-        b = server.find(Beer.class, b.getId());        
-        brewery = server.find(Brewery.class, brewery.getId());        
+        b = server.find(Beer.class, b.getId());
+        brewery = server.find(Brewery.class, brewery.getId());
         brewery.addBeer(b);
         server.save(brewery);
-        
+
         server.save(new Brewery("Paulaner"));
     }
 
@@ -157,6 +166,56 @@ public class Application {
 
         server.delete(beerToDelete);
         System.out.println("deleted: " + beerToDelete);
+
+    }
+        private void deleteBreweryBeers(Beer beer) {
+        String n = beer.getName();
+        Beer beerToDelete = server.find(Beer.class).where().like("name", n).findUnique();
+        if (beerToDelete == null) {
+            System.out.println(n + " not found");
+            return;
+        }
+        server.delete(beerToDelete);
+        System.out.println("deleted: " + beerToDelete);
+
+    }
+
+    private void listBeers() {
+        List<Beer> beers = server.find(Beer.class).findList();
+        for (Beer beer : beers) {
+            System.out.println(beers);
+        }
+    }
+
+    private void addBrewery() {
+
+        System.out.print("brewery to add: ");
+        String name = scanner.nextLine();
+        Brewery brewery = server.find(Brewery.class).where().like("name", name).findUnique();
+        if (brewery != null) {
+            System.out.println(name + " exists already");
+            return;
+        }
+        Brewery br = new Brewery(name);
+        server.save(br);
+        System.out.println(name + " added to brewery list");
+    }
+
+    private void deleteBrewery() {
+        System.out.print("brewery to delete: ");
+        String name = scanner.nextLine();
+        Brewery breweryToDelete = server.find(Brewery.class).where().like("name", name).findUnique();
+
+        if (breweryToDelete == null) {
+            System.out.println(name + " not found");
+            return;
+        }
+        List<Beer> beersToDelete = breweryToDelete.getBeers();
+        for (int i = 0; i < beersToDelete.size(); i++) {
+            deleteBreweryBeers(beersToDelete.get(i));
+        }
+        server.delete(breweryToDelete);
+        System.out.println("deleted: " + breweryToDelete);
 
     }
 }
