@@ -94,10 +94,15 @@ public class Palautus  {
         this.viikko = viikko;
     }
 
+//    @Override
+//    public String toString() {
+//        return etunimi + " " + sukunimi + " (" + opiskelijanumero + ") github:" + githubtunnus
+//                + " jenkins:" + jenkinstunnus + " tunteja " + tunteja + " tehtävät: " + tehtavat+ " "
+//                + "eli palautettuja yhteensä "+tehtavia;
+//    }
     @Override
     public String toString() {
-        return etunimi + " " + sukunimi + " (" + opiskelijanumero + ") github:" + githubtunnus
-                + " jenkins:" + jenkinstunnus + " tunteja " + tunteja + " tehtävät: " + tehtavat+ " "
-                + "eli palautettuja yhteensä "+tehtavia;
+        return tehtavia + " exercises " + tehtavat +  "\t\t Time spent " + tunteja
+                + " hours" ;
     }
 }
